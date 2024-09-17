@@ -1,6 +1,6 @@
 ![di3go Inverted Color](https://github.com/user-attachments/assets/33b4da3d-0511-4903-b2dc-46c5773f6b6d)
 ---
-In a world overflowing with OpenGL libraries, I thought, "Hey, why not add one more?" Enter RustyGL, my ambitious (read: slightly misguided) attempt at writing a Rust-based OpenGL library. 
+In a world overflowing with OpenGL libraries, I thought, "Hey, why not add one more?" enter Diego , my ambitious attempt at writing a Rust-based OpenGL library. 
 Is it groundbreaking? Probably not. But is it a fun way to sharpen my Rust skills while tangling with ancient C-based APIs? Absolutely.
 
 Why?
