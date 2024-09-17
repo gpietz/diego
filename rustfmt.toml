@@ -1,0 +1,24 @@
+# The maximum width of a line before rustfmt will break it into multiple lines.
+max_width = 100
+
+# Determines whether opening braces of items, functions, and impl blocks
+# should be on the same line as the declaration or on the next line.
+# Possible values: "AlwaysSameLine", "AlwaysNextLine"
+brace_style = "AlwaysNextLine"
+
+# If true, rustfmt will attempt to wrap comments to fit within the max_width.
+wrap_comments = true
+
+# Controls how imports are grouped and broken across multiple lines.
+# Possible values: "Preserve", "Crate", "Module"
+imports_granularity = "Crate"
+
+# If true, rustfmt will avoid combining control expressions (e.g., `if let`)
+# with the surrounding expressions into a single line.
+combine_control_expr = false
+
+# Enables the use of field init shorthand in Rust struct initializations.
+use_field_init_shorthand = true
+
+# This option determines what kind of newline characters (\n) rustfmt will use when formatting the file.
+newline_style = "Unix"

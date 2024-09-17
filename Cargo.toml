@@ -1,0 +1,17 @@
+[package]
+name = "diego"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+gl = "0.14.0"
+winit = "0.28.7"
+glutin = "0.29.1"
+once_cell = "1.19.0"
+bitflags = "2.6.0"
+
+[workspace]
+members = [
+    ".",
+    "tests/simple_window"
+]
