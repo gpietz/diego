@@ -1,13 +1,15 @@
-use crate::core::application_context::{ApplicationContext, SharedApplicationContext};
+use crate::core::application_context::{ApplicationContextImpl, SharedApplicationContext};
 use crate::core::main_loop::{DefaultMainLoop, SharedApplicationMainLoop};
 use crate::display::window::{GLWindow, Window, WindowSettings, WinitWindow};
 use crate::gl::color::Color;
 use crate::gl::rendering::clear;
 use crate::gl::setup::clear_color;
-use glutin::event_loop::EventLoop;
+use glutin::event_loop::{EventLoop, ControlFlow};
+use glutin::event::KeyboardInput;
 use std::time::Instant;
 use crate::core::event::Event;
 use crate::core::event::Event::WindowCloseRequested;
+use glutin::event::VirtualKeyCode;
 
 pub struct Application {
     main_loop: SharedApplicationMainLoop,
@@ -20,7 +22,7 @@ impl Default for Application {
         Self {
             main_loop: DefaultMainLoop::new(),
             running: false,
-            application_context: ApplicationContext::new(),
+            application_context: ApplicationContextImpl::new(),
         }
     }
 }
@@ -101,7 +103,7 @@ fn prepare_window(window: &mut WinitWindow, settings: &WindowSettings) {
 
 fn handle_event(event_collection: &mut Vec<Event>,
                 event: &glutin::event::Event<()>,
-                control_flow: &glutin::event_loop::ControlFlow,
+                control_flow: &ControlFlow,
                 context: &SharedApplicationContext) {
     match event {
         glutin::event::Event::WindowEvent { event, .. } =>
@@ -112,11 +114,14 @@ fn handle_event(event_collection: &mut Vec<Event>,
 
 fn handle_window_event(event_collection: &mut Vec<Event>,
                        event: &glutin::event::WindowEvent,
-                       control_flow: &glutin::event_loop::ControlFlow,
+                       control_flow: &ControlFlow,
                        context: &SharedApplicationContext) {
     match event {
         glutin::event::WindowEvent::CloseRequested => {
             handle_window_close(event_collection, context);
+        }
+        glutin::event::WindowEvent::KeyboardInput { input, .. } => {
+            handle_keyboard_input(event_collection, input, control_flow, context);
         }
         _ => {}
     }
@@ -126,4 +131,15 @@ fn handle_window_close(event_collection: &mut Vec<Event>,
                        context: &SharedApplicationContext) {
     event_collection.push(WindowCloseRequested);
     context.borrow_mut().should_exit = true;
+}
+
+fn handle_keyboard_input(_event_collection: &mut Vec<Event>,
+                    input: &KeyboardInput,
+                    _control_flow: &ControlFlow,
+                    context: &SharedApplicationContext) {
+    if let Some(VirtualKeyCode::Escape) = input.virtual_keycode {
+        if context.borrow().window_settings.get_exit_on_esc() {
+            context.borrow_mut().should_exit = true;
+        }
+    }
 }
