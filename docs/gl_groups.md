@@ -15,6 +15,7 @@
 * glBindBuffer(target, buffer) – Binds a buffer to a target (e.g., GL_ARRAY_BUFFER).
 * glBufferData(target, size, data, usage) – Stores data in the buffer.
 * glDeleteBuffers(n, buffers) – Deletes buffers.
+* glIsBuffer - Checks whether a given name (ID) corresponds to a valid buffer object. 
 
 ### VAO
 
@@ -62,3 +63,7 @@
 
 * glUniformMatrix4fv(location, count, transpose, value) 
 * glUniform1i(location, v0)
+
+### STATE
+
+* glGetInteger(enum, *data) - Retrieves various OpenGL states and limits (e.g., max textures, max vertex attributes)

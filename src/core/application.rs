@@ -1,15 +1,14 @@
 use crate::core::application_context::{ApplicationContextImpl, SharedApplicationContext};
 use crate::core::main_loop::{DefaultMainLoop, SharedApplicationMainLoop};
 use crate::display::window::{GLWindow, Window, WindowSettings, WinitWindow};
+use crate::events::event::Event;
+use crate::events::event::Event::WindowCloseRequested;
 use crate::gl::color::Color;
 use crate::gl::rendering::clear;
 use crate::gl::setup::clear_color;
-use glutin::event_loop::{EventLoop, ControlFlow};
 use glutin::event::KeyboardInput;
-use std::time::Instant;
-use crate::core::event::Event;
-use crate::core::event::Event::WindowCloseRequested;
 use glutin::event::VirtualKeyCode;
+use glutin::event_loop::{ControlFlow, EventLoop};
 
 pub struct Application {
     main_loop: SharedApplicationMainLoop,
@@ -36,7 +35,7 @@ impl Application {
         self
     }
 
-    pub fn with_window_settings(mut self, window_settings: WindowSettings) -> Self {
+    pub fn with_window_settings(self, window_settings: WindowSettings) -> Self {
         self.application_context.borrow_mut().window_settings = window_settings;
         self
     }
@@ -47,7 +46,6 @@ impl Application {
         self.running = true;
 
         let main_loop_clone = self.main_loop.clone();
-        let mut previous_time = Instant::now();
 
         // Create window
         let event_loop = EventLoop::new();

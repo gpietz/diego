@@ -1,5 +1,6 @@
 use crate::gl::color::Color;
 use crate::gl::types::Capability;
+use crate::gl::GLConstant;
 
 pub fn clear_color(color: Color) {
     unsafe {

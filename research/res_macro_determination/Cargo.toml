@@ -1,0 +1,6 @@
+[package]
+name = "res_macro_determination"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]

@@ -2,8 +2,8 @@ use std::cell::{RefCell};
 use std::fmt::{Debug, Formatter};
 use std::rc::Rc;
 use crate::core::delta_time::DeltaTime;
-use crate::core::event::Event;
 use crate::display::window::WindowSettings;
+use crate::events::event::Event;
 
 pub trait ApplicationContext {
     fn events(&self) -> &[Event];
