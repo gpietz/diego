@@ -37,7 +37,7 @@ impl LogLevel {
 
 impl Display for LogLevel {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        match (self) {
+        match self {
             LogLevel::Trace => write!(f, "TRACE"),
             LogLevel::Debug => write!(f, "DEBUG"),
             LogLevel::Info => write!(f, "INFO"),

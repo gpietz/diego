@@ -14,3 +14,4 @@ pub mod gl;
 pub mod vertex;
 pub mod logging;
 pub mod macros;
+pub mod geometry;

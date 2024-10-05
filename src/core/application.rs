@@ -56,22 +56,22 @@ impl Application {
         // Start event loop
         let mut event_collection  = Vec::<Event>::new();
         event_loop.run(move |event, _, control_flow| {
-            *control_flow = glutin::event_loop::ControlFlow::Poll;
+            *control_flow = ControlFlow::Poll;
 
             // Update delta time
-            context.borrow_mut().delta_time.update();
+            let delta_time= context.borrow_mut().delta_time.update();
 
             // Handle events
             handle_event(&mut event_collection, &event, control_flow, &context);
 
-            //main_loop_clone.borrow_mut().on_update(delta_time);
+            main_loop_clone.borrow_mut().on_update(delta_time);
 
             clear_color(Color::BLACK);
             clear();
             window.swap_buffers();
 
             if context.borrow().should_exit {
-                *control_flow = glutin::event_loop::ControlFlow::Exit;
+                *control_flow = ControlFlow::Exit;
             }
         });
 

@@ -1,4 +1,4 @@
-use crate::logging::log_manager::{LogError, LogManager, LogMessage};
+use crate::logging::log_manager::{LogError, LogMessage};
 use crate::logging::LogTarget;
 use std::collections::HashMap;
 use std::sync::mpsc::{Receiver, Sender};

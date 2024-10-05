@@ -25,7 +25,7 @@ pub trait Bindable {
     fn unbind(&self) -> Result<()>;
 }
 
-/// A trait for checking the binding state of objects in the context of OpenGL or 
+/// A trait for checking the binding state of objects in the context of OpenGL or
 /// similar graphics APIs.
 ///
 /// Implement this trait for types that need to provide information about their binding state, 
