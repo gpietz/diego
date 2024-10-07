@@ -5,6 +5,7 @@ use crate::logging::log_manager::{LogError, LogMessage};
 pub struct FileTarget {
     pub level: LogLevel,
     pub target_file: String,
+    pub format: String,
 }
 
 impl LogTarget for FileTarget {

@@ -11,6 +11,8 @@ pub mod log_target;
 pub mod log_queue;
 pub mod log_macros;
 
+mod log_formatter;
+
 #[derive(Clone, Copy, Default, PartialEq, Eq, PartialOrd, Ord)]
 pub enum LogLevel {
     Trace,
@@ -37,14 +39,7 @@ impl LogLevel {
 
 impl Display for LogLevel {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        match self {
-            LogLevel::Trace => write!(f, "TRACE"),
-            LogLevel::Debug => write!(f, "DEBUG"),
-            LogLevel::Info => write!(f, "INFO"),
-            LogLevel::Warn => write!(f, "WARN"),
-            LogLevel::Error => write!(f, "ERROR"),
-            LogLevel::Fatal => write!(f, "FATAL"),
-        }
+        write!(f, "{}", self.as_str())
     }
 }
 

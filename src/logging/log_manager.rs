@@ -25,8 +25,8 @@ pub struct LogMessage {
 }
 
 impl LogMessage {
-    fn new(level: LogLevel, message: String) -> Self {
-        Self { level, message, log_time: Instant::now() }
+    pub(crate) fn new<T: AsRef<str>>(level: LogLevel, message: T) -> Self {
+        Self { level, message: message.as_ref().to_owned(), log_time: Instant::now() }
     }
 }
 

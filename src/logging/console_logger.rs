@@ -1,10 +1,21 @@
 use std::any::Any;
-use crate::logging::{LogLevel, LogTarget};
+use crate::logging::{log_formatter, LogLevel, LogTarget};
+use crate::logging::log_formatter::format_message;
 use crate::logging::log_manager::{LogError, LogMessage};
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct ConsoleTarget {
     pub level: LogLevel,
+    pub format: String,
+}
+
+impl Default for ConsoleTarget {
+    fn default() -> Self {
+        Self {
+            level: LogLevel::Info,
+            format: log_formatter::DEFAULT_FORMAT.to_string(),
+        }
+    }
 }
 
 impl LogTarget for ConsoleTarget {
@@ -30,7 +41,7 @@ impl LogTarget for ConsoleTarget {
 
     fn log(&self, log_message: &LogMessage) -> Result<(), LogError> {
         if self.is_logging_enabled(log_message.level) {
-            println!("{}", log_message.message);
+            println!("{}", format_message(&self.format, log_message));
         }
         Ok(())
     }
