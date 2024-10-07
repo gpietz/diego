@@ -7,9 +7,7 @@ pub mod log_manager;
 pub mod file_logger;
 pub mod console_logger;
 pub mod network_logger;
-pub mod log_target;
 pub mod log_queue;
-pub mod log_macros;
 
 mod log_formatter;
 
