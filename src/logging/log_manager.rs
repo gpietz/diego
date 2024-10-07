@@ -1,7 +1,6 @@
 use crate::logging::log_queue::LogQueue;
 use crate::logging::{LogLevel, LogTarget};
 use std::collections::HashMap;
-use std::sync::mpsc::Sender;
 use std::sync::{Arc, RwLock};
 use std::time::Instant;
 use thiserror::Error;
@@ -34,9 +33,7 @@ impl LogMessage {
 pub(crate) struct LogManager {
     loggers: Arc<RwLock<HashMap<String, Box<dyn LogTarget>>>>,
     logger_count: u32,
-    message_sender: Option<Sender<LogMessage>>,
     message_queue: Option<LogQueue>
-
 }
 
 impl LogManager {
@@ -44,7 +41,6 @@ impl LogManager {
         Self {
             loggers: Arc::new(RwLock::new(HashMap::new())),
             logger_count: 0,
-            message_sender: None,
             message_queue: None
         }
     }
@@ -139,9 +135,8 @@ impl LogManager {
         if self.message_queue.is_none() {
             let create_and_run_result = LogQueue::create_and_run(self.loggers.clone());
             match create_and_run_result {
-                Ok(res) => {
-                    self.message_sender = Some(res.msg_sender);
-                    self.message_queue = Some(res.log_queue);
+                Ok(log_queue) => {
+                    self.message_queue = Some(log_queue);
                 }
                 Err(e) => {
                     eprintln!("Failed to create log queue: {}", e);
@@ -153,7 +148,6 @@ impl LogManager {
     pub fn stop_log_processing(&mut self) {
         if let Some(msq_queue) = self.message_queue.as_mut() {
             msq_queue.cancel();
-            self.message_sender = None;
             self.message_queue = None;
         }
     }
@@ -171,13 +165,10 @@ impl LogManager {
     }
 
     pub fn add_log_message(&mut self, level: LogLevel, message: String) {
-        if let Some(sender) = self.message_sender.as_mut() {
+        if let Some(log_queue) = self.message_queue.as_mut() {
             println!("Added log message: {} ({})", message, level);
             let log_message = LogMessage::new(level, message);
-
-            if let Err(e) = sender.send(log_message) {
-                eprintln!("Failed to send log message: {}", e);
-            }
+            log_queue.push_message(log_message);
         }
     }
 }

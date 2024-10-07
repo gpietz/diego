@@ -1,52 +1,42 @@
 use crate::logging::log_manager::{LogError, LogMessage};
 use crate::logging::LogTarget;
-use std::collections::HashMap;
+use std::collections::{HashMap, VecDeque};
 use std::sync::mpsc::{Receiver, Sender};
 use std::sync::{mpsc, Arc, Mutex, RwLock};
 use std::thread;
 use std::time::Duration;
 
-pub(crate) struct LogQueueCreateResult {
-    pub msg_sender: Sender<LogMessage>,
-    pub log_queue: LogQueue,
-}
-
 pub(crate) struct LogQueue {
-    message_receiver: Arc<Mutex<Receiver<LogMessage>>>,
+    message_queue: Arc<RwLock<VecDeque<LogMessage>>>,
     loggers: Arc<RwLock<HashMap<String, Box<dyn LogTarget>>>>,
     cancel: Arc<RwLock<bool>>,
 }
 
 impl LogQueue {
-    fn new(message_receiver: Receiver<LogMessage>,
-               loggers: Arc<RwLock<HashMap<String, Box<dyn LogTarget>>>>) -> Self {
+    fn new(loggers: Arc<RwLock<HashMap<String, Box<dyn LogTarget>>>>) -> Self {
         Self {
-            message_receiver: Arc::new(Mutex::new(message_receiver)),
+            message_queue: Arc::new(RwLock::new(VecDeque::new())),
             loggers,
             cancel: Arc::new(RwLock::new(false)),
         }
     }
 
     pub fn create_and_run(loggers: Arc<RwLock<HashMap<String, Box<dyn LogTarget>>>>)
-        -> Result<LogQueueCreateResult, LogError> {
-        let channel = mpsc::channel();
-        let mut msg_queue = Self::new(channel.1, loggers);
+        -> Result<Self, LogError> {
+        let mut msg_queue = Self::new(loggers);
         msg_queue.process_queue();
-        let create_result = LogQueueCreateResult {
-            msg_sender: channel.0,
-            log_queue: msg_queue
-        };
-        Ok(create_result)
+        Ok(msg_queue)
     }
 
-    pub fn process_queue(&mut self) {
-        let rx = self.message_receiver.clone();
+    fn process_queue(&mut self) {
         let loggers = Arc::clone(&self.loggers);
         let cancel = Arc::clone(&self.cancel);
+        let msg_queue = Arc::clone(&self.message_queue);
 
         thread::spawn(move || {
             loop {
-                while let Ok(log_message) = rx.lock().unwrap().recv() {
+                let mut queue = msg_queue.write().unwrap();
+                while let Some(log_message) = queue.pop_front() {
                     let loggers = loggers.read().unwrap();
                     for logger in loggers.values() {
                         if let Err(e) = logger.log(&log_message) {
@@ -63,11 +53,14 @@ impl LogQueue {
                 thread::sleep(Duration::from_millis(100));
             }
         });
-
-        println!("Exiting log queue");
     }
 
     pub fn cancel(&mut self) {
         *self.cancel.write().unwrap() = true;
+    }
+
+    pub fn push_message(&self, log_message: LogMessage) {
+        let mut queue = self.message_queue.write().unwrap();
+        queue.push_back(log_message);
     }
 }
