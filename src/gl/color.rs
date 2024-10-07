@@ -64,6 +64,9 @@ impl Color {
         a: 0.0,
     };
 
+    pub const DIEGO_DARK_BLUE: Color = color_from_rgb!(23, 42, 77);
+    pub const DIEGO_LIGHT_BLUE: Color = color_from_rgb!(88, 108, 193);
+
     pub const GAINSBORO: Color = color_from_rgb!(220, 220, 220);
     pub const LIGHT_GRAY: Color = color_from_rgb!(211, 211, 211);
     pub const SILVER: Color = color_from_rgb!(192, 192, 192);
