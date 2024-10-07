@@ -1,8 +1,7 @@
 use crate::logging::log_manager::{LogError, LogMessage};
 use crate::logging::LogTarget;
 use std::collections::{HashMap, VecDeque};
-use std::sync::mpsc::{Receiver, Sender};
-use std::sync::{mpsc, Arc, Mutex, RwLock};
+use std::sync::{Arc, RwLock};
 use std::thread;
 use std::time::Duration;
 
